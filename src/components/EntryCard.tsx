@@ -27,10 +27,10 @@ const EntryCard = ({ entry }: EntryCardProps) => {
   });
 
   return (
-    <Card className="overflow-hidden hover:border-primary/50 transition-colors duration-300">
+    <Card className="overflow-hidden hover:border-amber-500/50 dark:hover:border-yellow-400/50 transition-colors duration-300">
       <div className="flex flex-col md:flex-row md:items-center p-3">
         <div className="flex-grow pr-4">
-          <CardTitle className="text-lg font-bold hover:text-primary transition-colors mb-2">
+          <CardTitle className="text-lg font-bold hover:text-amber-600 dark:hover:text-yellow-400 transition-colors mb-2">
             <Link to={`/entries/${entryId}`}>{title}</Link>
           </CardTitle>
           
@@ -59,7 +59,7 @@ const EntryCard = ({ entry }: EntryCardProps) => {
         </div>
         
         <div className="mt-2 md:mt-0">
-          <Button asChild variant="outline" size="sm" className="text-xs h-7 hover:bg-transparent hover:text-primary">
+          <Button asChild variant="outline" size="sm" className="text-xs h-7 hover:bg-transparent hover:text-amber-600 dark:hover:text-yellow-400">
             <Link to={`/entries/${entryId}`}>
               Read →
             </Link>
