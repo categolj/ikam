@@ -187,7 +187,16 @@
   }
   
   .markdown-body pre code {
-    @apply bg-transparent p-0 text-xs leading-relaxed;
+    @apply bg-transparent p-0 text-xs leading-relaxed font-size-smaller;
+  }
+  
+  /* Custom classes for smaller code font */
+  .font-size-smaller {
+    font-size: 0.7rem !important;
+  }
+  
+  .inline-code {
+    font-size: 0.75rem !important;
   }
   
   /* Improved code colors for light mode */

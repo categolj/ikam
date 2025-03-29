@@ -70,7 +70,8 @@ const CodeBlock = ({node, inline, className, children, ...props}: any) => {
 
   // If it's inline code, just return it without copy button
   if (inline) {
-    return <code className={className} {...props}>{children}</code>;
+    // Add font-size-smaller class to inline code as well
+    return <code className={`${className || ''} inline-code`} {...props}>{children}</code>;
   }
 
   return (
@@ -91,7 +92,7 @@ const CodeBlock = ({node, inline, className, children, ...props}: any) => {
         </Button>
       </div>
       <pre className={className} {...props}>
-        <code ref={codeRef}>
+        <code ref={codeRef} className="font-size-smaller">
           {children}
         </code>
       </pre>
