@@ -2,8 +2,8 @@ import { gql } from 'graphql-request';
 
 // Query to get all entries with pagination support
 export const GET_ENTRIES = gql`
-  query GetEntries($first: Int, $after: String, $tag: String, $categories: [String]) {
-    getEntries(first: $first, after: $after, tag: $tag, categories: $categories) {
+  query GetEntries($first: Int, $after: String, $tag: String, $categories: [String], $query: String) {
+    getEntries(first: $first, after: $after, tag: $tag, categories: $categories, query: $query) {
       edges {
         node {
           entryId
