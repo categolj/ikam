@@ -12,9 +12,6 @@ export const GET_ENTRIES = gql`
             categories {
               name
             }
-            tags {
-              name
-            }
           }
           created {
             name
