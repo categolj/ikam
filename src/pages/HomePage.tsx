@@ -12,7 +12,7 @@ import { Loader2, ChevronDown, Filter, X, Search, ArrowUp } from 'lucide-react';
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchKeywords, setSearchKeywords] = useState<string[]>([]);
   const [searchInputValue, setSearchInputValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -43,7 +43,58 @@ const HomePage = () => {
   // Handle search input submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchQuery(searchInputValue);
+    if (searchInputValue.trim()) {
+      // Parse input to handle quoted strings as single keywords
+      const newKeywords: string[] = [];
+      let currentInput = searchInputValue.trim();
+      
+      // Regular expression to match quoted strings (both single and double quotes)
+      const quoteRegex = /(["'])(.*?)\1/g;
+      let match;
+      let lastIndex = 0;
+      
+      // Extract quoted strings
+      while ((match = quoteRegex.exec(currentInput)) !== null) {
+        // Process text before the quoted string
+        const textBefore = currentInput.substring(lastIndex, match.index).trim();
+        if (textBefore) {
+          // Split non-quoted text by whitespace
+          newKeywords.push(...textBefore.split(/\s+/));
+        }
+        
+        // Add the quoted string as a single keyword (without the quotes)
+        newKeywords.push(match[2]);
+        
+        lastIndex = match.index + match[0].length;
+      }
+      
+      // Process any remaining text after the last quoted string
+      const remainingText = currentInput.substring(lastIndex).trim();
+      if (remainingText) {
+        newKeywords.push(...remainingText.split(/\s+/));
+      }
+      
+      // Filter out empty strings
+      const filteredKeywords = newKeywords.filter(keyword => keyword.length > 0);
+      
+      // Add unique keywords only (avoid duplicates)
+      setSearchKeywords(prev => {
+        const uniqueKeywords = [...new Set([...prev, ...filteredKeywords])];
+        return uniqueKeywords;
+      });
+      setSearchInputValue('');
+    }
+  };
+  
+  // Remove a specific keyword
+  const removeKeyword = (keywordToRemove: string) => {
+    setSearchKeywords(prev => prev.filter(keyword => keyword !== keywordToRemove));
+  };
+  
+  // Clear all keywords
+  const clearKeywords = () => {
+    setSearchKeywords([]);
+    setSearchInputValue('');
   };
 
   // Get category from URL params
@@ -74,11 +125,21 @@ const HomePage = () => {
     hasNextPage, 
     isFetchingNextPage 
   } = useInfiniteQuery(
-    ['entries', activeCategory, activeTag, searchQuery], 
+    ['entries', activeCategory, activeTag, searchKeywords], 
     async ({ pageParam = null }) => {
       const categories = activeCategory ? [activeCategory] : undefined;
       const tag = activeTag || undefined;
-      const query = searchQuery.trim() || undefined;
+      
+      // Reconstruct original query format with quotes
+      let queryString = '';
+      if (searchKeywords.length > 0) {
+        queryString = searchKeywords.map(keyword => {
+          // If keyword contains spaces, wrap it in double quotes
+          return keyword.includes(' ') ? `"${keyword}"` : keyword;
+        }).join(' ');
+      }
+      
+      const query = queryString || undefined;
       
       return await graphqlClient.request(GET_ENTRIES, {
         first: 10,
@@ -110,7 +171,7 @@ const HomePage = () => {
   const clearFilters = () => {
     setActiveCategory(null);
     setActiveTag(null);
-    setSearchQuery('');
+    setSearchKeywords([]);
     setSearchInputValue('');
     setVisibleFilters(false);
   };
@@ -146,21 +207,36 @@ const HomePage = () => {
                 <Search className="h-4 w-4" />
               </button>
             </div>
-            {searchQuery && (
-              <div className="mt-2 flex items-center">
-                <span className="text-xs mr-1 text-muted-foreground">Searching for:</span>
-                <Badge variant="outline" className="text-xs py-0 px-1 flex items-center gap-1">
-                  {searchQuery}
-                  <X 
-                    size={10} 
-                    className="cursor-pointer" 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setSearchQuery('');
-                      setSearchInputValue('');
-                    }} 
-                  />
-                </Badge>
+            {searchKeywords.length > 0 && (
+              <div className="mt-2 flex flex-wrap items-center gap-1">
+                <span className="text-xs text-muted-foreground">Searching for:</span>
+                {searchKeywords.map((keyword, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="outline" 
+                    className="text-xs py-0 px-1 flex items-center gap-1"
+                  >
+                    {keyword}
+                    <X 
+                      size={10} 
+                      className="cursor-pointer" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        removeKeyword(keyword);
+                      }} 
+                    />
+                  </Badge>
+                ))}
+                {searchKeywords.length > 1 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-5 text-xs px-1 py-0"
+                    onClick={clearKeywords}
+                  >
+                    Clear all
+                  </Button>
+                )}
               </div>
             )}
           </form>
