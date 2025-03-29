@@ -126,24 +126,26 @@ const HomePage = () => {
       <section className="py-4">
         <div className="max-w-4xl mx-auto px-2 md:px-4">
           {/* Search input */}
-          <form onSubmit={handleSearchSubmit} className="mb-4 relative">
-            <input
-              type="text"
-              placeholder="Search articles..."
-              className={`w-full py-2 px-4 pr-10 bg-muted/50 rounded-md border border-border focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all ${
-                isSearchFocused ? 'border-primary ring-1 ring-primary' : ''
-              }`}
-              value={searchInputValue}
-              onChange={(e) => setSearchInputValue(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-            />
-            <button 
-              type="submit"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground bg-transparent border-none p-0 cursor-pointer"
-            >
-              <Search className="h-4 w-4" />
-            </button>
+          <form onSubmit={handleSearchSubmit} className="mb-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search articles..."
+                className={`w-full py-2 px-4 pr-10 bg-muted/50 rounded-md border border-border focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all ${
+                  isSearchFocused ? 'border-primary ring-1 ring-primary' : ''
+                }`}
+                value={searchInputValue}
+                onChange={(e) => setSearchInputValue(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+              />
+              <button 
+                type="submit"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground bg-transparent border-none p-0 cursor-pointer"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
             {searchQuery && (
               <div className="mt-2 flex items-center">
                 <span className="text-xs mr-1 text-muted-foreground">Searching for:</span>
