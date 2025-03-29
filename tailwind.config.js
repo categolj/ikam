@@ -82,6 +82,10 @@ export default {
               backgroundColor: 'hsl(var(--muted) / 0.3)',
               padding: '1rem',
               borderRadius: '0.5rem',
+              fontStyle: 'normal',
+            },
+            'blockquote p': {
+              fontStyle: 'normal',
             },
             'blockquote p:first-of-type::before': {
               content: '""',

@@ -135,7 +135,12 @@
   }
   
   .markdown-body blockquote {
-    @apply pl-4 border-l-4 border-muted italic text-muted-foreground my-4;
+    @apply pl-4 border-l-4 border-muted text-muted-foreground my-4;
+    font-style: normal !important;
+  }
+  
+  .markdown-body blockquote p {
+    font-style: normal !important;
   }
   
   .markdown-body ul, .markdown-body ol {

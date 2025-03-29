@@ -285,7 +285,12 @@ const EntryPage = () => {
           ]}
           className="markdown-body"
           components={{
-            code: CodeBlock
+            code: CodeBlock,
+            blockquote: ({ node, children, ...props }) => (
+              <blockquote style={{ fontStyle: 'normal' }} {...props}>
+                {children}
+              </blockquote>
+            )
           }}
         >
           {content}
