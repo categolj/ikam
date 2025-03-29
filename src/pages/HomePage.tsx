@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
@@ -12,10 +12,65 @@ import { Loader2, ChevronDown, Filter, X, Search, ArrowUp } from 'lucide-react';
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchKeywords, setSearchKeywords] = useState<string[]>([]);
+  
+  // Get parameters from URL
+  const searchParams = new URLSearchParams(location.search);
+  const categoryParam = searchParams.get('category');
+  const tagParam = searchParams.get('tag');
+  const searchParam = searchParams.get('search');
+  
+  // Parse search keywords from URL parameter
+  const parseSearchParam = (param: string | null): string[] => {
+    if (!param) return [];
+    
+    const keywords: string[] = [];
+    let currentInput = param.trim();
+    
+    // Regular expression to match quoted strings (both single and double quotes)
+    const quoteRegex = /([\"'])(.*?)\1/g;
+    let match;
+    let lastIndex = 0;
+    
+    // Extract quoted strings
+    while ((match = quoteRegex.exec(currentInput)) !== null) {
+      // Process text before the quoted string
+      const textBefore = currentInput.substring(lastIndex, match.index).trim();
+      if (textBefore) {
+        // Split non-quoted text by whitespace
+        keywords.push(...textBefore.split(/\s+/));
+      }
+      
+      // Add the quoted string as a single keyword (without the quotes)
+      keywords.push(match[2]);
+      
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Process any remaining text after the last quoted string
+    const remainingText = currentInput.substring(lastIndex).trim();
+    if (remainingText) {
+      keywords.push(...remainingText.split(/\s+/));
+    }
+    
+    // Filter out empty strings and return unique keywords
+    return [...new Set(keywords.filter(keyword => keyword.length > 0))];
+  };
+  
+  // Define state variables
+  const [searchKeywords, setSearchKeywords] = useState<string[]>(parseSearchParam(searchParam));
   const [searchInputValue, setSearchInputValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
+  const [activeTag, setActiveTag] = useState<string | null>(tagParam);
+  const [visibleFilters, setVisibleFilters] = useState(false);
+  
+  // Initialize state from URL parameters when URL changes
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+    setActiveTag(tagParam);
+    setSearchKeywords(parseSearchParam(searchParam));
+  }, [location.search, categoryParam, tagParam, searchParam]);
   
   // Handle scroll event to show/hide back to top button
   useEffect(() => {
@@ -39,7 +94,6 @@ const HomePage = () => {
     });
   };
   
-  
   // Handle search input submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +103,7 @@ const HomePage = () => {
       let currentInput = searchInputValue.trim();
       
       // Regular expression to match quoted strings (both single and double quotes)
-      const quoteRegex = /(["'])(.*?)\1/g;
+      const quoteRegex = /([\"'])(.*?)\1/g;
       let match;
       let lastIndex = 0;
       
@@ -77,44 +131,65 @@ const HomePage = () => {
       // Filter out empty strings
       const filteredKeywords = newKeywords.filter(keyword => keyword.length > 0);
       
-      // Add unique keywords only (avoid duplicates)
-      setSearchKeywords(prev => {
-        const uniqueKeywords = [...new Set([...prev, ...filteredKeywords])];
-        return uniqueKeywords;
-      });
+      // Create a new set of unique keywords that includes existing and new ones
+      const uniqueKeywords = [...new Set([...searchKeywords, ...filteredKeywords])];
+      
+      // Update state - this will trigger the useEffect that updates the URL
+      setSearchKeywords(uniqueKeywords);
       setSearchInputValue('');
     }
   };
   
   // Remove a specific keyword
   const removeKeyword = (keywordToRemove: string) => {
-    setSearchKeywords(prev => prev.filter(keyword => keyword !== keywordToRemove));
+    const updatedKeywords = searchKeywords.filter(keyword => keyword !== keywordToRemove);
+    setSearchKeywords(updatedKeywords);
+    
+    // Update URL parameters
+    const params = new URLSearchParams(location.search);
+    
+    if (updatedKeywords.length === 0) {
+      params.delete('search');
+    } else {
+      const searchString = updatedKeywords.map(keyword => {
+        return keyword.includes(' ') ? `"${keyword}"` : keyword;
+      }).join(' ');
+      
+      params.set('search', searchString);
+    }
+    
+    navigate({ search: params.toString() }, { replace: true });
   };
   
-  // Clear all keywords
+  // Clear all search keywords
   const clearKeywords = () => {
     setSearchKeywords([]);
     setSearchInputValue('');
+    
+    // Update URL by removing search parameter but keeping other filters
+    const params = new URLSearchParams(location.search);
+    params.delete('search');
+    navigate({ search: params.toString() }, { replace: true });
   };
 
-  // Get category from URL params
-  const searchParams = new URLSearchParams(location.search);
-  const categoryParam = searchParams.get('category');
-  const tagParam = searchParams.get('tag');
-
-  // Set up state for filters
-  const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
-  const [activeTag, setActiveTag] = useState<string | null>(tagParam);
-  const [visibleFilters, setVisibleFilters] = useState(false);
-
-  // Update URL when filters change
+  // Update URL when filters or search keywords change
   useEffect(() => {
     const params = new URLSearchParams();
     if (activeCategory) params.set('category', activeCategory);
     if (activeTag) params.set('tag', activeTag);
     
+    // Add search keywords to URL parameter
+    if (searchKeywords.length > 0) {
+      const searchString = searchKeywords.map(keyword => {
+        // If keyword contains spaces, wrap it in double quotes
+        return keyword.includes(' ') ? `"${keyword}"` : keyword;
+      }).join(' ');
+      
+      params.set('search', searchString);
+    }
+    
     navigate({ search: params.toString() }, { replace: true });
-  }, [activeCategory, activeTag, navigate]);
+  }, [activeCategory, activeTag, searchKeywords, navigate]);
 
   // Fetch entries with pagination support
   const { 
@@ -167,13 +242,16 @@ const HomePage = () => {
     }
   };
 
-  // Clear all filters
+  // Clear all filters and search keywords
   const clearFilters = () => {
     setActiveCategory(null);
     setActiveTag(null);
     setSearchKeywords([]);
     setSearchInputValue('');
     setVisibleFilters(false);
+    
+    // Clear URL parameters
+    navigate({ search: '' }, { replace: true });
   };
 
   // Toggle mobile filters visibility
