@@ -12,6 +12,40 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
+// Import a subset of languages that we want to support
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import bash from 'highlight.js/lib/languages/bash';
+import css from 'highlight.js/lib/languages/css';
+import json from 'highlight.js/lib/languages/json';
+import java from 'highlight.js/lib/languages/java';
+import python from 'highlight.js/lib/languages/python';
+import xml from 'highlight.js/lib/languages/xml';
+import yaml from 'highlight.js/lib/languages/yaml';
+import sql from 'highlight.js/lib/languages/sql';
+import markdown from 'highlight.js/lib/languages/markdown';
+
+// Define the supported languages and register them with lowlight
+const supportedLanguages = {
+  'js': javascript,
+  'javascript': javascript,
+  'ts': typescript,
+  'typescript': typescript,
+  'bash': bash,
+  'sh': bash,
+  'css': css,
+  'json': json,
+  'java': java,
+  'py': python,
+  'python': python,
+  'xml': xml,
+  'html': xml,
+  'yaml': yaml,
+  'yml': yaml,
+  'sql': sql,
+  'md': markdown,
+  'markdown': markdown,
+};
 
 const CodeBlock = ({node, inline, className, children, ...props}: any) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -57,7 +91,7 @@ const CodeBlock = ({node, inline, className, children, ...props}: any) => {
         </Button>
       </div>
       <pre className={className} {...props}>
-        <code ref={codeRef} className={language ? `language-${language}` : ''}>
+        <code ref={codeRef}>
           {children}
         </code>
       </pre>
@@ -245,7 +279,10 @@ const EntryPage = () => {
       <article className="prose prose-sm prose-invert max-w-none mb-8">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw, rehypeHighlight]}
+          rehypePlugins={[
+            rehypeRaw, 
+            [rehypeHighlight, { ignoreMissing: true, languages: supportedLanguages }]
+          ]}
           className="markdown-body"
           components={{
             code: CodeBlock
