@@ -1,0 +1,297 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --ring: 142 76% 36%;
+    
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    
+    --primary: 142 76% 44%;
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --ring: 142 76% 44%;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: "JetBrains Mono", monospace, system-ui, sans-serif;
+  }
+  
+  /* Custom terminal-inspired scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+  
+  /* Code-like selection style */
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary));
+  }
+  
+  /* GitHub-style markdown content */
+  .markdown-body {
+    @apply text-foreground;
+    line-height: 1.6;
+  }
+  
+  .markdown-body h1 {
+    @apply text-xl font-bold mt-6 mb-4 border-b border-border pb-2;
+  }
+  
+  .markdown-body h2 {
+    @apply text-lg font-bold mt-5 mb-3 border-b border-border pb-1;
+  }
+  
+  .markdown-body h3 {
+    @apply text-base font-bold mt-4 mb-2;
+  }
+  
+  .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+    @apply font-bold mt-3 mb-2;
+  }
+  
+  .markdown-body p {
+    @apply my-4;
+  }
+  
+  .markdown-body a {
+    @apply text-primary hover:underline;
+  }
+  
+  .markdown-body blockquote {
+    @apply pl-4 border-l-4 border-muted italic text-muted-foreground my-4;
+  }
+  
+  .markdown-body ul, .markdown-body ol {
+    @apply pl-6 my-4;
+  }
+  
+  .markdown-body ul {
+    @apply list-disc;
+  }
+  
+  .markdown-body ol {
+    @apply list-decimal;
+  }
+  
+  .markdown-body li {
+    @apply mb-1;
+  }
+  
+  /* Adjust code block background colors for light/dark modes */
+  :root .markdown-body pre {
+    @apply bg-gray-100 rounded-md overflow-auto my-4 px-4 py-3;
+  }
+  
+  :root .markdown-body code {
+    @apply bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded-md text-sm;
+  }
+  
+  .dark .markdown-body pre {
+    @apply bg-muted rounded-md overflow-auto my-4 px-4 py-3;
+  }
+  
+  .dark .markdown-body code {
+    @apply bg-muted text-gray-300 px-1.5 py-0.5 rounded-md text-sm;
+  }
+  
+  /* Fix for code block with copy button */
+  .markdown-body .relative.group pre {
+    @apply p-0 my-0;
+  }
+  
+  /* Add padding to the inner code element instead */
+  .markdown-body .relative.group pre code {
+    @apply block px-4 py-3;
+  }
+  
+  .markdown-body pre code {
+    @apply bg-transparent p-0 text-xs leading-relaxed;
+  }
+  
+  /* Improved code colors for light mode */
+  :root .hljs-keyword,
+  :root .hljs-tag,
+  :root .hljs-selector-tag,
+  :root .hljs-literal,
+  :root .hljs-strong,
+  :root .hljs-name {
+    @apply text-rose-600;
+  }
+  
+  :root .hljs-code,
+  :root .hljs-attribute,
+  :root .hljs-selector-id,
+  :root .hljs-selector-class,
+  :root .hljs-section,
+  :root .hljs-type {
+    @apply text-amber-700;
+  }
+  
+  :root .hljs-variable,
+  :root .hljs-params,
+  :root .hljs-meta {
+    @apply text-blue-600;
+  }
+  
+  :root .hljs-string,
+  :root .hljs-regexp,
+  :root .hljs-link,
+  :root .hljs-subst {
+    @apply text-green-600;
+  }
+  
+  :root .hljs-title,
+  :root .hljs-symbol,
+  :root .hljs-bullet,
+  :root .hljs-built_in,
+  :root .hljs-addition {
+    @apply text-purple-600;
+  }
+  
+  :root .hljs-comment,
+  :root .hljs-quote,
+  :root .hljs-deletion {
+    @apply text-slate-500;
+  }
+  
+  /* Dark mode overrides */
+  .dark .hljs-keyword,
+  .dark .hljs-tag,
+  .dark .hljs-selector-tag,
+  .dark .hljs-literal,
+  .dark .hljs-strong,
+  .dark .hljs-name {
+    @apply text-rose-400;
+  }
+  
+  .dark .hljs-code,
+  .dark .hljs-attribute,
+  .dark .hljs-selector-id,
+  .dark .hljs-selector-class,
+  .dark .hljs-section,
+  .dark .hljs-type {
+    @apply text-amber-400;
+  }
+  
+  .dark .hljs-variable,
+  .dark .hljs-params,
+  .dark .hljs-meta {
+    @apply text-blue-400;
+  }
+  
+  .dark .hljs-string,
+  .dark .hljs-regexp,
+  .dark .hljs-link,
+  .dark .hljs-subst {
+    @apply text-green-400;
+  }
+  
+  .dark .hljs-title,
+  .dark .hljs-symbol,
+  .dark .hljs-bullet,
+  .dark .hljs-built_in,
+  .dark .hljs-addition {
+    @apply text-purple-400;
+  }
+  
+  .dark .hljs-comment,
+  .dark .hljs-quote,
+  .dark .hljs-deletion {
+    @apply text-slate-400;
+  }
+  
+  .markdown-body img {
+    @apply max-w-full rounded-md my-4;
+  }
+  
+  .markdown-body table {
+    @apply w-full border-collapse my-4;
+  }
+  
+  .markdown-body table th, .markdown-body table td {
+    @apply border border-border p-2 text-sm;
+  }
+  
+  .markdown-body table th {
+    @apply bg-muted font-semibold;
+  }
+  
+  .markdown-body hr {
+    @apply border-t border-border my-6;
+  }
+}
