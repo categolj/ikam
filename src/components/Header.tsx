@@ -3,16 +3,28 @@ import { Terminal, Code, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { ThemeToggle } from './theme-toggle';
+import BinaryRain from './BinaryRain';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoHovered, setLogoHovered] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-3">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm relative overflow-hidden">
+      {/* Binary rain effect container for entire header */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <BinaryRain active={logoHovered} />
+      </div>
+      
+      <div className="container mx-auto px-4 py-3 relative z-10">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
-          <Link to="/" className="flex items-center space-x-2 text-2xl font-bold">
+          <Link 
+            to="/" 
+            className="flex items-center space-x-2 text-2xl font-bold"
+            onMouseEnter={() => setLogoHovered(true)}
+            onMouseLeave={() => setLogoHovered(false)}
+          >
             <Terminal className="h-6 w-6 text-amber-500 dark:text-yellow-400" />
             <span className="bg-gradient-to-r from-amber-600 to-amber-400 dark:from-yellow-400 dark:to-yellow-300 bg-clip-text text-transparent">
               IK.AM
