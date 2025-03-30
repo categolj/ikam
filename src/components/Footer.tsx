@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, Terminal } from 'lucide-react';
+import { Github, X, Linkedin, Terminal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -62,13 +62,13 @@ const Footer = () => {
                 <Github size={20} />
               </a>
               <a 
-                href="https://twitter.com" 
+                href="https://x.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Twitter"
+                aria-label="X (formerly Twitter)"
               >
-                <Twitter size={20} />
+                <X size={20} />
               </a>
               <a 
                 href="https://linkedin.com" 
