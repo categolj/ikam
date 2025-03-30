@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Github, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Github, Linkedin, Mail, X } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import BackToTop from '../components/BackToTop';
 
@@ -42,7 +42,7 @@ const AboutPage = () => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-gray-700 text-amber-700 dark:text-yellow-400 hover:bg-amber-200 dark:hover:bg-gray-600 transition-colors"
                   >
-                    <Twitter size={18} />
+                    <X size={18} />
                     <span>@making</span>
                   </a>
                   <a 
