@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomePage from './pages/HomePage';
 import EntryPage from './pages/EntryPage';
+import AboutPage from './pages/AboutPage';
 import Layout from './components/Layout';
 import { ThemeProvider } from './lib/theme-provider';
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<HomePage />} />
               <Route path="/entries/:entryId" element={<EntryPage />} />
+              <Route path="/aboutme" element={<AboutPage />} />
             </Route>
           </Routes>
         </Router>
