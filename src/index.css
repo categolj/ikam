@@ -7,8 +7,8 @@
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --mutate: 240 4.8% 95.9%;
+    --mutated-foreground: 240 3.8% 46.1%;
     
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
@@ -309,5 +309,76 @@
   
   .markdown-body hr {
     @apply border-t border-border my-6;
+  }
+  
+  /* Styling for Table of Contents */
+  .markdown-body .toc-container {
+    @apply bg-muted/30 p-5 rounded-lg mb-8 text-sm border border-border/60 shadow-sm;
+    position: relative;
+    margin-top: 1.5rem;
+  }
+
+  /* TOC Title styling */
+  .markdown-body .toc-container .toc-title {
+    @apply block font-bold text-primary mb-2 text-base border-b border-primary/20 pb-1;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Add toggle icon */
+  .markdown-body .toc-container .toc-title::after {
+    content: "▼";
+    @apply text-primary text-sm;
+    transition: transform 0.2s ease;
+  }
+
+  /* Rotate icon when collapsed */
+  .markdown-body .toc-container.collapsed .toc-title::after {
+    transform: rotate(-90deg);
+  }
+
+  /* Hide TOC content when collapsed */
+  .markdown-body .toc-container.collapsed > ul {
+    display: none;
+  }
+
+  /* Remove outer bullets and adjust padding for ToC lists */
+  .markdown-body .toc-container ul {
+    @apply list-none p-0 mt-0 mb-0;
+  }
+  
+  /* Style all list items in ToC */
+  .markdown-body .toc-container li {
+    @apply pl-4 mb-2;
+    position: relative;
+  }
+  
+  /* Add bullet styling */
+  .markdown-body .toc-container li::before {
+    content: "•";
+    @apply text-primary absolute left-0 top-0 opacity-80;
+  }
+  
+  /* Style links in ToC */
+  .markdown-body .toc-container a {
+    @apply text-foreground hover:text-primary no-underline transition-colors;
+  }
+  
+  /* Indent nested lists */
+  .markdown-body .toc-container ul ul {
+    @apply pl-2 mt-2 mb-1;
+  }
+  
+  /* Add a subtle highlight to the current section or when hovering */
+  .markdown-body .toc-container li:hover > a {
+    @apply text-primary underline;
+  }
+
+  /* Active section styling */
+  .markdown-body .toc-container li.active > a {
+    @apply text-primary font-medium;
   }
 }

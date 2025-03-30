@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRY } from '../lib/queries';
 import { GetEntryResponse } from '../lib/types';
+import { insertToc, generateSlug } from '../lib/toc-generator';
 import { CalendarDays, User, Clock, ArrowLeft, Share2, Bookmark, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
@@ -179,8 +180,12 @@ const EntryPage = () => {
     );
   }
 
-  const { frontMatter, content, created, updated } = data.getEntry;
+  const { frontMatter, content: rawContent, created, updated } = data.getEntry;
   const { title, categories, tags } = frontMatter;
+  
+  // Process content to replace <!-- toc --> with table of contents
+  const content = insertToc(rawContent);
+  
   const readingTime = calculateReadingTime(content);
 
   return (
@@ -269,7 +274,93 @@ const EntryPage = () => {
               <blockquote style={{ fontStyle: 'normal' }} {...props}>
                 {children}
               </blockquote>
-            )
+            ),
+            div: ({ node, className, children, ...props }) => {
+              // Check if this is the TOC container
+              if (className?.includes('toc-container')) {
+                // Add a ref to the component
+                const tocRef = React.useRef<HTMLDivElement>(null);
+                
+                // Effect to add toggle functionality
+                React.useEffect(() => {
+                  const tocElement = tocRef.current;
+                  if (!tocElement) return;
+
+                  // Function to toggle the TOC visibility
+                  const toggleToc = () => {
+                    tocElement.classList.toggle('collapsed');
+                    
+                    // Store the state in localStorage for persistence
+                    const isCollapsed = tocElement.classList.contains('collapsed');
+                    localStorage.setItem('tocCollapsed', isCollapsed ? 'true' : 'false');
+                  };
+
+                  // Add click event listener
+                  const handleClick = (e: MouseEvent) => {
+                    // Only handle clicks on the TOC title (::before pseudo-element)
+                    const rect = tocElement.getBoundingClientRect();
+                    const clickY = e.clientY - rect.top;
+                    
+                    // If click is in the title area (approx. first 40px)
+                    if (clickY < 40) {
+                      toggleToc();
+                    }
+                  };
+                  
+                  tocElement.addEventListener('click', handleClick);
+
+                  // Check localStorage for preferred state
+                  const savedState = localStorage.getItem('tocCollapsed');
+                  if (savedState === 'true') {
+                    tocElement.classList.add('collapsed');
+                  }
+
+                  // Cleanup
+                  return () => {
+                    tocElement.removeEventListener('click', handleClick);
+                  };
+                }, []);
+
+                return (
+                  <div ref={tocRef} className="toc-container" {...props}>
+                    {children}
+                  </div>
+                );
+              }
+              // Regular div
+              return <div {...props}>{children}</div>;
+            },
+            // Add IDs to headings for anchor links
+            h1: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h1 id={slug} {...props}>{children}</h1>;
+            },
+            h2: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h2 id={slug} {...props}>{children}</h2>;
+            },
+            h3: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h3 id={slug} {...props}>{children}</h3>;
+            },
+            h4: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h4 id={slug} {...props}>{children}</h4>;
+            },
+            h5: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h5 id={slug} {...props}>{children}</h5>;
+            },
+            h6: ({ node, children, ...props }) => {
+              const text = children.toString();
+              const slug = generateSlug(text);
+              return <h6 id={slug} {...props}>{children}</h6>;
+            }
           }}
         >
           {content}
