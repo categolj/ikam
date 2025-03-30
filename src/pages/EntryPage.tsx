@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRY } from '../lib/queries';
 import { GetEntryResponse } from '../lib/types';
-import { CalendarDays, User, Clock, ArrowLeft, Share2, Bookmark, ChevronLeft, ChevronRight, ArrowUp, Copy, Check } from 'lucide-react';
+import { CalendarDays, User, Clock, ArrowLeft, Share2, Bookmark, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
+import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -103,29 +104,6 @@ const CodeBlock = ({node, inline, className, children, ...props}: any) => {
 const EntryPage = () => {
   const { entryId } = useParams<{ entryId: string }>();
   const navigate = useNavigate();
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  
-  // Handle scroll event to show/hide back to top button
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
   
   const { data, isLoading, isError } = useQuery<GetEntryResponse>(
     ['entry', entryId],
@@ -356,18 +334,7 @@ const EntryPage = () => {
       </section>
 
       {/* Back to Top Button */}
-      {showBackToTop && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <Button
-            onClick={scrollToTop}
-            size="sm"
-            className="rounded-full w-10 h-10 flex items-center justify-center bg-primary hover:bg-primary/90 shadow-md"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <BackToTop />
     </div>
   );
 };

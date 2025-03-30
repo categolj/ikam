@@ -5,9 +5,10 @@ import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRIES } from '../lib/queries';
 import { GetEntriesResponse, Entry, EntryEdge } from '../lib/types';
 import EntryCard from '../components/EntryCard';
+import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Loader2, ChevronDown, Filter, X, Search, ArrowUp } from 'lucide-react';
+import { Loader2, ChevronDown, Filter, X, Search } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,6 @@ const HomePage = () => {
   const [searchKeywords, setSearchKeywords] = useState<string[]>(parseSearchParam(searchParam));
   const [searchInputValue, setSearchInputValue] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
   const [activeTag, setActiveTag] = useState<string | null>(tagParam);
   const [visibleFilters, setVisibleFilters] = useState(false);
@@ -71,28 +71,6 @@ const HomePage = () => {
     setActiveTag(tagParam);
     setSearchKeywords(parseSearchParam(searchParam));
   }, [location.search, categoryParam, tagParam, searchParam]);
-  
-  // Handle scroll event to show/hide back to top button
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
   
   // Handle search input submit
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -415,18 +393,7 @@ const HomePage = () => {
       </section>
       
       {/* Back to Top Button */}
-      {showBackToTop && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <Button
-            onClick={scrollToTop}
-            size="sm"
-            className="rounded-full w-10 h-10 flex items-center justify-center bg-primary hover:bg-primary/90 shadow-md"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <BackToTop />
     </div>
   );
 };
