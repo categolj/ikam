@@ -10,7 +10,7 @@ import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import ReactMarkdown, { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
@@ -327,6 +327,7 @@ const EntryPage = () => {
           ]}
           className="markdown-body"
           components={{
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             code: CodeBlock as any,
             blockquote: ({ children, ...props }) => (
               <blockquote style={{ fontStyle: 'normal' }} {...props}>
