@@ -5,11 +5,10 @@ import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRY } from '../lib/queries';
 import { GetEntryResponse } from '../lib/types';
 import { insertToc, generateSlug } from '../lib/toc-generator';
-import { CalendarDays, User, Clock, ArrowLeft, Share2, Bookmark, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
+import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -209,6 +208,12 @@ const EntryPage = () => {
         .catch((error) => console.log('Error copying to clipboard', error));
     }
   };
+  
+  // Handle PDF generation
+  const handleGeneratePDF = () => {
+    // Open print dialog with PDF options pre-selected
+    window.print();
+  };
 
   if (isLoading) {
     return (
@@ -310,15 +315,16 @@ const EntryPage = () => {
             variant="outline"
             size="sm"
             className="text-xs h-7 flex items-center"
+            onClick={handleGeneratePDF}
           >
-            <Bookmark className="mr-1 h-3 w-3" />
-            Save
+            <FileDown className="mr-1 h-3 w-3" />
+            PDF
           </Button>
         </div>
       </header>
 
       {/* Article Content */}
-      <article className="prose prose-sm prose-invert max-w-none mb-8">
+      <article data-title={title} className="prose prose-sm prose-invert max-w-none mb-8">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[

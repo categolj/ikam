@@ -397,4 +397,159 @@
   .animate-fadeIn {
     animation: fadeIn 0.5s ease-out forwards;
   }
+  
+  /* Print styles for PDF export */
+  @page {
+    margin: 1.5cm;
+  }
+  
+  @media print {
+    /* Hide all non-essential elements for PDF output */
+    header,
+    nav, 
+    footer, 
+    .back-to-top-button,
+    button,
+    .flex.gap-2, /* Action buttons container */
+    .flex.flex-wrap.items-center.gap-1.mb-3.text-xs, /* Categories breadcrumb */
+    .flex.flex-wrap.items-center.gap-2.text-xs.text-muted-foreground.mb-3, /* Meta information */
+    article + footer, /* Article footer with tags */
+    article .toc-container /* Hide entire TOC container for PDF */ {
+      display: none !important;
+    }
+    
+    /* Ensure the article displays with proper margins */
+    body {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: white !important;
+      color: black !important;
+    }
+    
+    /* Format article content for print */
+    article {
+      width: 100% !important;
+      max-width: 100% !important;
+      font-size: 11pt !important;
+      color: black !important;
+      padding-top: 0 !important;
+      margin-top: 0 !important;
+    }
+    
+    /* Make all text in article black */
+    article * {
+      color: black !important;
+      border-color: black !important;
+    }
+    
+    /* COMPLETELY RESET ALL CODE STYLING FOR PRINT */
+    article pre, 
+    article code, 
+    article pre code,
+    article .markdown-body pre,
+    article .markdown-body code,
+    article .markdown-body pre code,
+    article .markdown-body .relative.group,
+    article .markdown-body .relative.group pre,
+    article .markdown-body .relative.group code {
+      background-color: #f5f5f5 !important;
+      color: black !important;
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+      border-radius: 0 !important;
+      white-space: pre-wrap !important; /* Enable text wrapping in code blocks */
+      word-wrap: break-word !important; /* Break long words if necessary */
+      word-break: break-all !important; /* Handle long words and ensure they don't overflow */
+    }
+    
+    /* UNIFIED APPROACH: Only apply border to specific containers */
+    /* This targets stand-alone pre elements */
+    article .markdown-body > pre {
+      border: 1px solid black !important;
+      border-radius: 3px !important;
+      margin: 1em 0 !important;
+      padding: 0.5em !important;
+      overflow: visible !important; /* Changed from hidden to visible to allow text wrapping */
+      max-width: 100% !important; /* Ensure it doesn't exceed container width */
+    }
+    
+    /* This targets the group wrapper (for code with copy button) */
+    article .markdown-body > .relative.group {
+      border: 1px solid black !important;
+      border-radius: 3px !important;
+      margin: 1em 0 !important;
+      padding: 0.5em !important;
+      overflow: visible !important; /* Changed from hidden to visible to allow text wrapping */
+      max-width: 100% !important; /* Ensure it doesn't exceed container width */
+    }
+    
+    /* Make sure no nested borders appear */
+    article .markdown-body > .relative.group > pre {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    /* Special handling for inline code */
+    article p > code, article li > code {
+      background-color: #f5f5f5 !important;
+      color: black !important;
+      padding: 0.1em 0.3em !important;
+      border-radius: 3px !important;
+      font-size: 0.9em !important;
+    }
+    
+    /* Add the article title at the top of PDF */
+    article::before {
+      content: attr(data-title);
+      display: block;
+      font-size: 20pt !important;
+      font-weight: bold;
+      margin-bottom: 1cm;
+      text-align: left; /* Changed from center to left alignment */
+    }
+    
+    /* Ensure headings are black */
+    article h1, article h2, article h3, article h4, article h5, article h6 {
+      color: black !important;
+      border-color: #ddd !important;
+    }
+    
+    /* Ensure links show their URLs */
+    a::after {
+      content: " (" attr(href) ")";
+      font-size: 0.8em;
+      color: #444 !important;
+    }
+    
+    /* Don't show URL for anchor links */
+    a[href^="#"]::after {
+      content: "";
+    }
+    
+    /* Avoid page breaks inside code blocks */
+    pre, code {
+      page-break-inside: avoid;
+    }
+    
+    /* Hide copy button in code blocks */
+    .absolute.right-2.top-2 {
+      display: none !important;
+    }
+    
+    /* Adjust heading sizes for print */
+    h1 {
+      font-size: 18pt !important;
+    }
+    
+    h2 {
+      font-size: 16pt !important;
+    }
+    
+    h3 {
+      font-size: 14pt !important;
+    }
+    
+    /* We don't need to expand TOC since we hide it completely */
+  }
 }

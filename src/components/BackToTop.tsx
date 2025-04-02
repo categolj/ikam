@@ -51,7 +51,7 @@ const BackToTop: React.FC<BackToTopProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 back-to-top-button">
       <Button
         onClick={scrollToTop}
         size="sm"
