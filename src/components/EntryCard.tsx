@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CalendarDays, User } from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Card, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Entry } from '../lib/types';

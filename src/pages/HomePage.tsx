@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRIES } from '../lib/queries';
-import { GetEntriesResponse, Entry, EntryEdge } from '../lib/types';
 import EntryCard from '../components/EntryCard';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Loader2, ChevronDown, Filter, X, Search } from 'lucide-react';
+import { Loader2, ChevronDown, X, Search } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -25,10 +24,10 @@ const HomePage = () => {
     if (!param) return [];
     
     const keywords: string[] = [];
-    let currentInput = param.trim();
+    const currentInput = param.trim();
     
     // Regular expression to match quoted strings (both single and double quotes)
-    const quoteRegex = /([\"'])(.*?)\1/g;
+    const quoteRegex = /(["'])(.*?)\1/g;
     let match;
     let lastIndex = 0;
     
@@ -63,7 +62,6 @@ const HomePage = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(categoryParam);
   const [activeTag, setActiveTag] = useState<string | null>(tagParam);
-  const [visibleFilters, setVisibleFilters] = useState(false);
   
   // Initialize state from URL parameters when URL changes
   useEffect(() => {
@@ -78,10 +76,10 @@ const HomePage = () => {
     if (searchInputValue.trim()) {
       // Parse input to handle quoted strings as single keywords
       const newKeywords: string[] = [];
-      let currentInput = searchInputValue.trim();
+      const currentInput = searchInputValue.trim();
       
       // Regular expression to match quoted strings (both single and double quotes)
-      const quoteRegex = /([\"'])(.*?)\1/g;
+      const quoteRegex = /(["'])(.*?)\1/g;
       let match;
       let lastIndex = 0;
       
@@ -226,16 +224,12 @@ const HomePage = () => {
     setActiveTag(null);
     setSearchKeywords([]);
     setSearchInputValue('');
-    setVisibleFilters(false);
     
     // Clear URL parameters
     navigate({ search: '' }, { replace: true });
   };
 
-  // Toggle mobile filters visibility
-  const toggleFilters = () => {
-    setVisibleFilters(!visibleFilters);
-  };
+  // Mobile filters toggle feature is removed - may be added back in future
 
   return (
     <div>

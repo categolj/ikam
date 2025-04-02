@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useTheme } from '../lib/theme-provider';
+import { useTheme } from '../lib/theme-hooks';
 
 interface BinaryRainProps {
   active: boolean;
@@ -9,24 +9,26 @@ const BinaryRain = ({ active }: BinaryRainProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
   
-  // Check if we're in dark mode (either explicitly or via system preference)
-  const isDarkMode = () => {
-    if (theme === 'dark') return true;
-    if (theme === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  };
-
   useEffect(() => {
+    // Check if we're in dark mode (either explicitly or via system preference)
+    const isDarkMode = () => {
+      if (theme === 'dark') return true;
+      if (theme === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+      return false;
+    };
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Call the function inside the effect to use the latest theme state
+    const darkMode = isDarkMode();
+    
     // Only run the effect if we're in dark mode and the effect is active
-    if (!isDarkMode() || !active) {
+    if (!darkMode || !active) {
       // Clear the canvas when not active
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       return;

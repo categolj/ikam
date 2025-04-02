@@ -9,9 +9,9 @@
 // Regular expression for matching headings (# to ######)
 const HEADING_REGEX = /^(#{1,6})\s+(.+)$/gm;
 
-// Heading level constants
-const MIN_HEADING_LEVEL = 1;  // h1
-const MAX_HEADING_LEVEL = 6;  // h6
+// Heading level constants (not currently used but kept for future enhancements)
+// const MIN_HEADING_LEVEL = 1;  // h1
+// const MAX_HEADING_LEVEL = 6;  // h6
 
 interface TocItem {
   level: number;
@@ -30,7 +30,7 @@ export function generateSlug(text: string): string {
     // For CJK content, create a more browser-friendly ID
     return text
       .replace(/\s+/g, '-')     // Replace spaces with hyphens
-      .replace(/[^\w\u3000-\u9fff\-]/g, '')  // Keep CJK chars and alphanumeric
+      .replace(/[^\w\u3000-\u9fff-]/g, '')  // Keep CJK chars and alphanumeric
       .replace(/-+/g, '-')      // Replace multiple hyphens with single
       .replace(/^-+|-+$/g, ''); // Trim hyphens from start and end
   }

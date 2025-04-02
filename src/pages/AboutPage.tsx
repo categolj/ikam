@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Github, Linkedin, Mail, X } from 'lucide-react';
+import { Github, Mail, X } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import BackToTop from '../components/BackToTop';
 

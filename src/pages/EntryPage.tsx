@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
@@ -49,11 +49,18 @@ const supportedLanguages = {
   'markdown': markdown,
 };
 
-const CodeBlock = ({node, inline, className, children, ...props}: any) => {
+interface CodeBlockProps {
+  node?: React.ReactNode;
+  inline?: boolean;
+  className?: string;
+  children: React.ReactNode;
+  [key: string]: unknown; // For any other props
+}
+
+const CodeBlock = ({inline, className, children, ...props}: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const codeRef = React.useRef<HTMLElement>(null);
-  const match = /language-(\w+)/.exec(className || '');
-  const language = match ? match[1] : '';
+  // Removed unused match variable
   
   // Function to handle copying code to clipboard
   const handleCopy = () => {
@@ -98,6 +105,57 @@ const CodeBlock = ({node, inline, className, children, ...props}: any) => {
           {children}
         </code>
       </pre>
+    </div>
+  );
+};
+
+// TocContainer component to handle the TOC functionality
+const TocContainer = ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => {
+  const tocRef = React.useRef<HTMLDivElement>(null);
+  
+  // Effect to add toggle functionality
+  React.useEffect(() => {
+    const tocElement = tocRef.current;
+    if (!tocElement) return;
+
+    // Function to toggle the TOC visibility
+    const toggleToc = () => {
+      tocElement.classList.toggle('collapsed');
+      
+      // Store the state in localStorage for persistence
+      const isCollapsed = tocElement.classList.contains('collapsed');
+      localStorage.setItem('tocCollapsed', isCollapsed ? 'true' : 'false');
+    };
+
+    // Add click event listener
+    const handleClick = (e: MouseEvent) => {
+      // Only handle clicks on the TOC title (::before pseudo-element)
+      const rect = tocElement.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      
+      // If click is in the title area (approx. first 40px)
+      if (clickY < 40) {
+        toggleToc();
+      }
+    };
+    
+    tocElement.addEventListener('click', handleClick);
+
+    // Check localStorage for preferred state
+    const savedState = localStorage.getItem('tocCollapsed');
+    if (savedState === 'true') {
+      tocElement.classList.add('collapsed');
+    }
+
+    // Cleanup
+    return () => {
+      tocElement.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  return (
+    <div ref={tocRef} className="toc-container" {...props}>
+      {children}
     </div>
   );
 };
@@ -170,7 +228,7 @@ const EntryPage = () => {
       <div className="text-center py-8 px-2 sm:px-4">
         <h2 className="text-lg font-bold mb-2">Article Not Found</h2>
         <p className="text-muted-foreground text-sm mb-4">
-          The article you're looking for doesn't exist or has been removed.
+          The article you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Button onClick={goBack} size="sm" className="text-xs h-7">
           <ArrowLeft className="mr-1 h-3 w-3" />
@@ -270,93 +328,46 @@ const EntryPage = () => {
           className="markdown-body"
           components={{
             code: CodeBlock,
-            blockquote: ({ node, children, ...props }) => (
+            blockquote: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => (
               <blockquote style={{ fontStyle: 'normal' }} {...props}>
                 {children}
               </blockquote>
             ),
-            div: ({ node, className, children, ...props }) => {
+            div: ({ className, children, ...props }: { node?: React.ReactNode; className?: string; children: React.ReactNode; [key: string]: unknown }) => {
               // Check if this is the TOC container
               if (className?.includes('toc-container')) {
-                // Add a ref to the component
-                const tocRef = React.useRef<HTMLDivElement>(null);
-                
-                // Effect to add toggle functionality
-                React.useEffect(() => {
-                  const tocElement = tocRef.current;
-                  if (!tocElement) return;
-
-                  // Function to toggle the TOC visibility
-                  const toggleToc = () => {
-                    tocElement.classList.toggle('collapsed');
-                    
-                    // Store the state in localStorage for persistence
-                    const isCollapsed = tocElement.classList.contains('collapsed');
-                    localStorage.setItem('tocCollapsed', isCollapsed ? 'true' : 'false');
-                  };
-
-                  // Add click event listener
-                  const handleClick = (e: MouseEvent) => {
-                    // Only handle clicks on the TOC title (::before pseudo-element)
-                    const rect = tocElement.getBoundingClientRect();
-                    const clickY = e.clientY - rect.top;
-                    
-                    // If click is in the title area (approx. first 40px)
-                    if (clickY < 40) {
-                      toggleToc();
-                    }
-                  };
-                  
-                  tocElement.addEventListener('click', handleClick);
-
-                  // Check localStorage for preferred state
-                  const savedState = localStorage.getItem('tocCollapsed');
-                  if (savedState === 'true') {
-                    tocElement.classList.add('collapsed');
-                  }
-
-                  // Cleanup
-                  return () => {
-                    tocElement.removeEventListener('click', handleClick);
-                  };
-                }, []);
-
-                return (
-                  <div ref={tocRef} className="toc-container" {...props}>
-                    {children}
-                  </div>
-                );
+                return <TocContainer {...props}>{children}</TocContainer>;
               }
               // Regular div
               return <div {...props}>{children}</div>;
             },
             // Add IDs to headings for anchor links
-            h1: ({ node, children, ...props }) => {
+            h1: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h1 id={slug} {...props}>{children}</h1>;
             },
-            h2: ({ node, children, ...props }) => {
+            h2: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h2 id={slug} {...props}>{children}</h2>;
             },
-            h3: ({ node, children, ...props }) => {
+            h3: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h3 id={slug} {...props}>{children}</h3>;
             },
-            h4: ({ node, children, ...props }) => {
+            h4: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h4 id={slug} {...props}>{children}</h4>;
             },
-            h5: ({ node, children, ...props }) => {
+            h5: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h5 id={slug} {...props}>{children}</h5>;
             },
-            h6: ({ node, children, ...props }) => {
+            h6: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
               const text = children.toString();
               const slug = generateSlug(text);
               return <h6 id={slug} {...props}>{children}</h6>;
