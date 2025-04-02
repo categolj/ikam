@@ -4,6 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRIES } from '../lib/queries';
 import EntryCard from '../components/EntryCard';
+import { GetEntriesResponse } from '../lib/types';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -175,7 +176,7 @@ const HomePage = () => {
     fetchNextPage, 
     hasNextPage, 
     isFetchingNextPage 
-  } = useInfiniteQuery(
+  } = useInfiniteQuery<GetEntriesResponse>(
     ['entries', activeCategory, activeTag, searchKeywords], 
     async ({ pageParam = null }) => {
       const categories = activeCategory ? [activeCategory] : undefined;
@@ -201,7 +202,7 @@ const HomePage = () => {
       });
     },
     {
-      getNextPageParam: (lastPage) => {
+      getNextPageParam: (lastPage: GetEntriesResponse) => {
         return lastPage.getEntries.pageInfo.hasNextPage 
           ? lastPage.getEntries.pageInfo.endCursor 
           : undefined;

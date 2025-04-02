@@ -10,7 +10,7 @@ import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
@@ -327,13 +327,13 @@ const EntryPage = () => {
           ]}
           className="markdown-body"
           components={{
-            code: CodeBlock,
-            blockquote: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => (
+            code: CodeBlock as any,
+            blockquote: ({ children, ...props }) => (
               <blockquote style={{ fontStyle: 'normal' }} {...props}>
                 {children}
               </blockquote>
             ),
-            div: ({ className, children, ...props }: { node?: React.ReactNode; className?: string; children: React.ReactNode; [key: string]: unknown }) => {
+            div: ({ className, children, ...props }) => {
               // Check if this is the TOC container
               if (className?.includes('toc-container')) {
                 return <TocContainer {...props}>{children}</TocContainer>;
@@ -342,33 +342,33 @@ const EntryPage = () => {
               return <div {...props}>{children}</div>;
             },
             // Add IDs to headings for anchor links
-            h1: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h1: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h1 id={slug} {...props}>{children}</h1>;
             },
-            h2: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h2: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h2 id={slug} {...props}>{children}</h2>;
             },
-            h3: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h3: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h3 id={slug} {...props}>{children}</h3>;
             },
-            h4: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h4: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h4 id={slug} {...props}>{children}</h4>;
             },
-            h5: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h5: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h5 id={slug} {...props}>{children}</h5>;
             },
-            h6: ({ children, ...props }: { node?: React.ReactNode; children: React.ReactNode; [key: string]: unknown }) => {
-              const text = children.toString();
+            h6: ({ children, ...props }) => {
+              const text = String(children);
               const slug = generateSlug(text);
               return <h6 id={slug} {...props}>{children}</h6>;
             }
