@@ -408,34 +408,6 @@ const EntryPage = () => {
         </div>
       </footer>
 
-      {/* Related Articles */}
-      <section className="mb-8">
-        <h2 className="text-lg font-bold mb-2">Related Articles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {/* This would typically be fetched from the API based on tags or categories */}
-          {/* Placeholder cards for now */}
-          <Card className="p-3 hover:border-primary/50 transition-colors">
-            <h3 className="font-medium mb-1 text-sm hover:text-primary">
-              <Link to="/entries/1">Understanding GraphQL and TypeScript Integration</Link>
-            </h3>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <CalendarDays className="mr-1 h-3 w-3" />
-              <span>Updated: March 21, 2025</span>
-            </div>
-          </Card>
-          
-          <Card className="p-3 hover:border-primary/50 transition-colors">
-            <h3 className="font-medium mb-1 text-sm hover:text-primary">
-              <Link to="/entries/2">React Server Components: A Deep Dive</Link>
-            </h3>
-            <div className="flex items-center text-xs text-muted-foreground">
-              <CalendarDays className="mr-1 h-3 w-3" />
-              <span>Updated: March 15, 2025</span>
-            </div>
-          </Card>
-        </div>
-      </section>
-
       {/* Back to Top Button */}
       <BackToTop />
     </div>
