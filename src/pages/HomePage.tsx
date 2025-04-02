@@ -6,6 +6,7 @@ import { GET_ENTRIES } from '../lib/queries';
 import EntryCard from '../components/EntryCard';
 import { GetEntriesResponse } from '../lib/types';
 import BackToTop from '../components/BackToTop';
+import FeaturedTags from '../components/FeaturedTags';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Loader2, ChevronDown, X, Search } from 'lucide-react';
@@ -237,6 +238,11 @@ const HomePage = () => {
       {/* Main content with articles list */}
       <section className="py-4">
         <div className="max-w-4xl mx-auto px-2 md:px-4">
+          {/* Featured Tags Section */}
+          <div className="mb-6">
+            <FeaturedTags />
+          </div>
+          
           {/* Search input */}
           <form onSubmit={handleSearchSubmit} className="mb-4">
             <div className="relative">
