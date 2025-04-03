@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { CalendarDays, User } from 'lucide-react';
 import { Card, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Entry } from '../lib/types';
+import CategoryList from './CategoryList';
 
 interface EntryCardProps {
   entry: Entry;
@@ -34,13 +34,7 @@ const EntryCard = ({ entry }: EntryCardProps) => {
             <Link to={`/entries/${entryId}`}>{title}</Link>
           </CardTitle>
           
-          <div className="flex flex-wrap gap-1 mb-2">
-            {categories.map((category) => (
-              <Badge key={category.name} variant="geekStyle" className="text-xs py-0">
-                {category.name}
-              </Badge>
-            ))}
-          </div>
+          <CategoryList categories={categories} className="mb-2" separator={true} />
           
           <div className="flex flex-wrap items-center text-xs text-muted-foreground gap-3">
             <div className="flex items-center">

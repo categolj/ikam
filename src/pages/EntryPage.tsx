@@ -8,6 +8,7 @@ import { insertToc, generateSlug } from '../lib/toc-generator';
 import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
+import CategoryList from '../components/CategoryList';
 import { Button } from '../components/ui/button';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -288,17 +289,8 @@ const EntryPage = () => {
           </div>
         </div>
 
-        {/* Categories as breadcrumb */}
-        <div className="flex flex-wrap items-center gap-1 mb-3 text-xs">
-          {categories.map((category, index) => (
-            <React.Fragment key={category.name}>
-              {index > 0 && <span className="mx-1 text-muted-foreground">/</span>}
-              <Link to={`/?category=${category.name}`}>
-                <Badge variant="geekStyle" className="text-xs py-0">{category.name}</Badge>
-              </Link>
-            </React.Fragment>
-          ))}
-        </div>
+        {/* Categories as hierarchical breadcrumb */}
+        <CategoryList categories={categories} className="mb-3 text-xs" separator={true} />
 
         {/* Action buttons */}
         <div className="flex gap-2">

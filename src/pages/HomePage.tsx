@@ -180,7 +180,12 @@ const HomePage = () => {
   } = useInfiniteQuery<GetEntriesResponse>(
     ['entries', activeCategory, activeTag, searchKeywords], 
     async ({ pageParam = null }) => {
-      const categories = activeCategory ? [activeCategory] : undefined;
+      // If activeCategory contains commas, it's a hierarchical filter
+      // Split the comma-separated list and use it for categories
+      const categories = activeCategory 
+        ? activeCategory.split(',') 
+        : undefined;
+      
       const tag = activeTag || undefined;
       
       // Reconstruct original query format with quotes
@@ -300,30 +305,31 @@ const HomePage = () => {
             )}
           </form>
           
-          {/* Active filters / breadcrumb */}
+          {/* Active filters / breadcrumb with individually clickable hierarchy levels */}
           <div className="mb-4 flex items-center text-xs">
             <span className="text-muted-foreground">Entries</span>
-            {activeCategory && (
-              <>
-                <span className="mx-1 text-muted-foreground">/</span>
-                <Badge variant="geekStyle" className="flex items-center gap-1 cursor-pointer" onClick={() => setActiveCategory(null)}>
-                  {activeCategory}
-                  <X
-                    size={10}
-                    className="cursor-pointer"
-                  />
-                </Badge>
-              </>
-            )}
+            {activeCategory && activeCategory.split(',').map((category, index, array) => {
+              // For each category level, build a filter string that includes all categories up to this level
+              const hierarchicalFilter = array.slice(0, index + 1).join(',');
+              
+              return (
+                <React.Fragment key={hierarchicalFilter}>
+                  <span className="mx-1 text-muted-foreground">/</span>
+                  <Badge 
+                    variant="geekStyle" 
+                    className="flex items-center gap-1 cursor-pointer" 
+                    onClick={() => setActiveCategory(hierarchicalFilter)}
+                  >
+                    {category}
+                  </Badge>
+                </React.Fragment>
+              );
+            })}
             {activeTag && (
               <>
                 <span className="mx-1 text-muted-foreground">/</span>
                 <Badge variant="geekStyle" className="flex items-center gap-1 cursor-pointer" onClick={() => setActiveTag(null)}>
                   {activeTag}
-                  <X
-                    size={10}
-                    className="cursor-pointer"
-                  />
                 </Badge>
               </>
             )}
