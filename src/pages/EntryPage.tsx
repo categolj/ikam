@@ -5,7 +5,7 @@ import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRY } from '../lib/queries';
 import { GetEntryResponse } from '../lib/types';
 import { insertToc, generateSlug } from '../lib/toc-generator';
-import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, ChevronRight, Copy, Check, Tag } from 'lucide-react';
+import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, Copy, Check, Tag } from 'lucide-react';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import CategoryList from '../components/CategoryList';
@@ -397,16 +397,7 @@ const EntryPage = () => {
             </div>
           </div>
           
-          <div className="flex gap-1 mt-2 md:mt-0">
-            <Button variant="ghost" size="sm" className="text-xs h-7 flex items-center">
-              <ChevronLeft className="mr-1 h-3 w-3" />
-              Previous
-            </Button>
-            <Button variant="ghost" size="sm" className="text-xs h-7 flex items-center">
-              Next
-              <ChevronRight className="ml-1 h-3 w-3" />
-            </Button>
-          </div>
+          {/* Previous and Next links removed as requested */}
         </div>
       </footer>
 
