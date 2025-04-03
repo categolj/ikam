@@ -56,7 +56,7 @@ const FeaturedTags: React.FC = () => {
           {tags.map((tag) => (
             <Badge
               key={tag}
-              variant="geekStyle"
+              variant="tag"
               className="cursor-pointer hover:bg-amber-500/10 dark:hover:bg-yellow-400/10 transition-colors py-1"
               onClick={() => handleTagClick(tag)}
             >

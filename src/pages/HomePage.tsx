@@ -277,7 +277,7 @@ const HomePage = () => {
                 {searchKeywords.map((keyword, index) => (
                   <Badge 
                     key={index} 
-                    variant="outline" 
+                    variant="keyword" 
                     className="text-xs py-0 px-1 flex items-center gap-1"
                   >
                     {keyword}
@@ -328,7 +328,7 @@ const HomePage = () => {
             {activeTag && (
               <>
                 <span className="mx-1 text-muted-foreground">/</span>
-                <Badge variant="geekStyle" className="flex items-center gap-1 cursor-pointer" onClick={() => setActiveTag(null)}>
+                <Badge variant="tag" className="flex items-center gap-1 cursor-pointer" onClick={() => setActiveTag(null)}>
                   {activeTag}
                 </Badge>
               </>

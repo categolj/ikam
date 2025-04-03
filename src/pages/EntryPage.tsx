@@ -5,7 +5,7 @@ import { graphqlClient } from '../lib/graphql-client';
 import { GET_ENTRY } from '../lib/queries';
 import { GetEntryResponse } from '../lib/types';
 import { insertToc, generateSlug } from '../lib/toc-generator';
-import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, ChevronRight, Copy, Check } from 'lucide-react';
+import { CalendarDays, User, Clock, ArrowLeft, Share2, FileDown, ChevronLeft, ChevronRight, Copy, Check, Tag } from 'lucide-react';
 import BackToTop from '../components/BackToTop';
 import { Badge } from '../components/ui/badge';
 import CategoryList from '../components/CategoryList';
@@ -384,10 +384,14 @@ const EntryPage = () => {
             <p className="text-xs text-muted-foreground mb-1">
               Last updated: {formatDate(updated.date)}
             </p>
+            <div className="flex items-center gap-2 mb-2">
+              <Tag className="h-3 w-3 text-amber-600 dark:text-yellow-400" />
+              <span className="text-xs text-muted-foreground">Tags:</span>
+            </div>
             <div className="flex flex-wrap gap-1">
               {tags.map((tag) => (
                 <Link to={`/?tag=${tag.name}`} key={tag.name}>
-                  <Badge variant="outline" className="text-xs py-0">{tag.name}</Badge>
+                  <Badge variant="tag" className="text-xs py-0">{tag.name}</Badge>
                 </Link>
               ))}
             </div>
