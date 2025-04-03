@@ -238,10 +238,12 @@ const HomePage = () => {
       {/* Main content with articles list */}
       <section className="py-4">
         <div className="max-w-4xl mx-auto px-2 md:px-4">
-          {/* Featured Tags Section */}
-          <div className="mb-6">
-            <FeaturedTags />
-          </div>
+          {/* Featured Tags Section - Only show when no search/filter is active */}
+          {!activeCategory && !activeTag && searchKeywords.length === 0 && (
+            <div className="mb-6">
+              <FeaturedTags />
+            </div>
+          )}
           
           {/* Search input */}
           <form onSubmit={handleSearchSubmit} className="mb-4">
